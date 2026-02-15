@@ -1,6 +1,6 @@
 {
-    "name": "Agendai - Gestão de Agendas",
-    "short_name": "Agendai",
+    "name": "Agenda Carrinho e Display",
+    "short_name": "Agenda Carrinho",
     "description": "Sistema de gestão de agendas para carrinhos e displays.",
     "start_url": "/",
     "display": "standalone",
