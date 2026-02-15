@@ -218,21 +218,21 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
 
           <div className="flex justify-between items-center mb-6">
             <div>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-wide">Data e Horário</p>
-              <h4 className="text-xl font-bold">{selectedTime} <span className="text-sm font-medium text-slate-400">em {new Date(selectedDate + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span></h4>
+              <p className="text-sm text-slate-500 font-bold uppercase tracking-wide">Data e Horário</p>
+              <h4 className="text-3xl font-bold">{selectedTime} <span className="text-lg font-medium text-slate-400">em {new Date(selectedDate + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}</span></h4>
             </div>
-            <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center">
-              <span className="material-icons-round">check_circle</span>
+            <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center">
+              <span className="material-icons-round text-2xl">check_circle</span>
             </div>
           </div>
 
-          <div className="space-y-4 mb-6">
+          <div className="space-y-6 mb-8">
             {/* Primary Participant Selection - Only for Admins */}
             {isAdmin && (
               <div className="relative">
-                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1 block">Publicador 1</label>
+                <label className="text-xs font-bold text-slate-400 uppercase ml-1 mb-2 block">Publicador 1</label>
                 <div className="relative">
-                  <span className="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">person</span>
+                  <span className="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person</span>
                   <input
                     type="text"
                     placeholder="Quem irá participar?"
@@ -242,10 +242,10 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                       setShowPrimaryResults(true);
                     }}
                     onFocus={() => setShowPrimaryResults(true)}
-                    className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-800"
+                    className="w-full pl-12 pr-4 py-4 text-lg rounded-2xl border-slate-200 dark:border-slate-700 dark:bg-slate-800"
                   />
                   {showPrimaryResults && primarySearch.length > 0 && (
-                    <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-40 border border-slate-100">
+                    <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-40 border border-slate-100">
                       {filterUsers(primarySearch).map(u => (
                         <button
                           key={u.id}
@@ -254,14 +254,13 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                             setPrimarySearch(u.name);
                             setShowPrimaryResults(false);
                           }}
-                          className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-left border-b last:border-0 border-slate-50 dark:border-slate-700"
+                          className="w-full px-6 py-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 text-left border-b last:border-0 border-slate-50 dark:border-slate-700"
                         >
-                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px]">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
                             {u.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1">
-                            <p className="text-xs font-bold">{u.name}</p>
-                            {/* <p className="text-[9px] text-slate-400">{u.email}</p> */}
+                            <p className="text-base font-bold">{u.name}</p>
                           </div>
                         </button>
                       ))}
@@ -271,27 +270,11 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
               </div>
             )}
 
-            {/* Force 2 participants - Toggle Removed */}
-            {/* <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex">
-              <button
-                onClick={() => setWithPartner(false)}
-                className={`flex-1 py-2 text-[10px] font-bold rounded-lg transition-all uppercase tracking-wider ${!withPartner ? 'bg-white dark:bg-slate-700 shadow-sm text-primary dark:text-white' : 'text-slate-400'}`}
-              >
-                Individual
-              </button>
-              <button
-                onClick={() => setWithPartner(true)}
-                className={`flex-1 py-2 text-[10px] font-bold rounded-lg transition-all uppercase tracking-wider ${withPartner ? 'bg-white dark:bg-slate-700 shadow-sm text-primary dark:text-white' : 'text-slate-400'}`}
-              >
-                Em Dupla
-              </button>
-            </div> */}
-
             {withPartner && (
               <div className="relative">
-                <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 mb-1 block">Publicador 2</label>
+                <label className="text-xs font-bold text-slate-400 uppercase ml-1 mb-2 block">Publicador 2</label>
                 <div className="relative">
-                  <span className="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">person_add</span>
+                  <span className="material-icons-round absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person_add</span>
                   <input
                     type="text"
                     placeholder="Parceiro ou nome manual..."
@@ -302,10 +285,10 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                       setPartnerId('');
                       setShowPartnerResults(true);
                     }}
-                    className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-800"
+                    className="w-full pl-12 pr-4 py-4 text-lg rounded-2xl border-slate-200 dark:border-slate-700 dark:bg-slate-800"
                   />
                   {showPartnerResults && partnerSearch.length > 0 && (
-                    <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-40">
+                    <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-40">
                       {filterUsers(partnerSearch).filter(u => u.id !== primaryUserId).map(u => (
                         <button
                           key={u.id}
@@ -315,14 +298,13 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                             setManualPartnerName('');
                             setShowPartnerResults(false);
                           }}
-                          className="w-full px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700 text-left border-b last:border-0 border-slate-50 dark:border-slate-700"
+                          className="w-full px-6 py-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-700 text-left border-b last:border-0 border-slate-50 dark:border-slate-700"
                         >
-                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px]">
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
                             {u.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1">
-                            <p className="text-xs font-bold">{u.name}</p>
-                            {/* <p className="text-[9px] text-slate-400">{u.email}</p> */}
+                            <p className="text-base font-bold">{u.name}</p>
                           </div>
                         </button>
                       ))}
@@ -333,13 +315,21 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
             )}
           </div>
 
-          <button
-            onClick={handleBooking}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
-          >
-            Confirmar Reserva
-            <span className="material-icons-round text-sm">arrow_forward</span>
-          </button>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={handleBooking}
+              className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-5 rounded-2xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-xl"
+            >
+              Confirmar Reserva
+              <span className="material-icons-round text-2xl">arrow_forward</span>
+            </button>
+            <button
+              onClick={() => setSelectedTime(null)}
+              className="w-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-lg hover:bg-slate-200 dark:hover:bg-slate-700"
+            >
+              Cancelar
+            </button>
+          </div>
         </div>
       )}
     </div>
