@@ -111,23 +111,19 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
           {db.users.map(u => (
             <div key={u.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                  {u.name.charAt(0).toUpperCase()}
-                </div>
                 <div>
-                  <h3 className="font-bold text-sm">{u.name}</h3>
-                  <p className="text-[10px] text-slate-500 font-medium">{u.email}</p>
-                  <span className={`inline-block mt-1 text-[8px] font-bold uppercase px-1.5 py-0.5 rounded ${u.role === 'ADMIN' ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+                  <h3 className="font-bold text-xl">{u.name}</h3>
+                  <span className={`inline-block mt-1 text-xs font-bold uppercase px-2 py-1 rounded ${u.role === 'ADMIN' ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
                     {u.role}
                   </span>
                 </div>
               </div>
-              <div className="flex gap-1">
+              <div className="flex gap-2">
                 <button onClick={() => startEdit(u)} className="text-slate-400 hover:text-primary p-2 transition-colors">
-                  <span className="material-icons-round text-lg">edit</span>
+                  <span className="material-icons-round text-3xl">edit</span>
                 </button>
                 <button onClick={() => handleDeleteUser(u.id)} className="text-slate-400 hover:text-rose-500 p-2 transition-colors">
-                  <span className="material-icons-round text-lg">delete</span>
+                  <span className="material-icons-round text-3xl">delete</span>
                 </button>
               </div>
             </div>
