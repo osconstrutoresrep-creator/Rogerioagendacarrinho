@@ -203,22 +203,22 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
               <div className="flex gap-2 border-t border-slate-100 dark:border-slate-700 pt-4">
                 <button
                   onClick={() => startEdit(sch)}
-                  className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold transition-colors flex items-center justify-center gap-1 hover:bg-slate-200 dark:hover:bg-slate-600"
+                  className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm font-bold transition-colors flex items-center justify-center gap-1 hover:bg-slate-200 dark:hover:bg-slate-600"
                 >
-                  <span className="material-icons-round text-sm">edit</span>
+                  <span className="material-icons-round text-lg">edit</span>
                   Editar
                 </button>
                 <button
                   onClick={() => toggleScheduleActive(sch.id)}
-                  className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-xs font-bold transition-colors"
+                  className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm font-bold transition-colors"
                 >
                   {sch.active ? 'Pausar' : 'Ativar'}
                 </button>
                 <button
                   onClick={() => deleteSchedule(sch.id)}
-                  className="px-3 py-2 rounded-lg bg-rose-50 text-rose-500 text-xs font-bold transition-colors"
+                  className="px-3 py-2 rounded-lg bg-rose-50 text-rose-500 text-sm font-bold transition-colors"
                 >
-                  <span className="material-icons-round text-sm">delete</span>
+                  <span className="material-icons-round text-2xl">delete</span>
                 </button>
               </div>
             </div>
