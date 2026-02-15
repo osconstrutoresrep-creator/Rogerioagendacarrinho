@@ -58,7 +58,7 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, onBack 
       <div key={app.id} className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
         <div onClick={() => setSelectedAppointment(app)} className="cursor-pointer">
           <div className="flex justify-between items-start mb-3">
-            <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded text-[9px] font-bold uppercase">
+            <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded text-xs font-bold uppercase">
               {sch?.name || 'Agenda Removida'}
             </span>
             <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
@@ -75,7 +75,7 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, onBack 
               <h3 className="font-bold text-sm">Participantes:</h3>
               <div className="flex flex-col gap-1 mt-1">
                 {app.participants.map((p, idx) => (
-                  <p key={idx} className="text-xs text-slate-500 font-medium flex items-center gap-1">
+                  <p key={idx} className="text-sm text-slate-500 font-medium flex items-center gap-1">
                     <span className="material-icons-round text-xs">person</span>
                     {getUserName(p)}
                   </p>
@@ -86,12 +86,12 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, onBack 
         </div>
 
         <div className="flex gap-2 pt-3 border-t border-slate-50 dark:border-slate-700">
-          <button className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-[10px] font-bold uppercase transition-colors">
+          <button className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-sm font-bold uppercase transition-colors">
             Editar
           </button>
           <button
             onClick={() => handleDelete(app.id)}
-            className="flex-1 py-2 rounded-lg bg-rose-50 text-rose-500 text-[10px] font-bold uppercase transition-colors"
+            className="flex-1 py-2 rounded-lg bg-rose-50 text-rose-500 text-sm font-bold uppercase transition-colors"
           >
             Excluir
           </button>
