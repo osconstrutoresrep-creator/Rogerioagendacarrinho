@@ -74,8 +74,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                 {db.announcements.filter(a => a.active).map(ann => (
                   <div key={ann.id} className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-100 dark:border-amber-900/50">
                     <h3 className="font-bold text-amber-900 dark:text-amber-100">{ann.title}</h3>
-                    <p className="text-sm text-amber-800 dark:text-amber-200/80 mt-1">{ann.content}</p>
-                    <p className="text-[10px] text-amber-700 dark:text-amber-300/60 mt-2">
+                    <p className="text-base text-amber-800 dark:text-amber-200/80 mt-1">{ann.content}</p>
+                    <p className="text-xs text-amber-700 dark:text-amber-300/60 mt-2">
                       {new Date(ann.date).toLocaleDateString('pt-BR')}
                     </p>
                   </div>
@@ -137,8 +137,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                   <span className="material-icons-round text-2xl">event_note</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-bold">{sch.name}</h3>
-                  <p className="text-xs text-slate-500">{sch.category} • {getScheduleTimeRange(sch)}</p>
+                  <h3 className="font-bold text-lg">{sch.name}</h3>
+                  <p className="text-sm text-slate-500">{sch.category} • {getScheduleTimeRange(sch)}</p>
                 </div>
                 <span className="material-icons-round text-slate-300">chevron_right</span>
               </div>

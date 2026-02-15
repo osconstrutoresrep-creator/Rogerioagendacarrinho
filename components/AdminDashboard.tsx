@@ -158,8 +158,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
                       </button>
                     </div>
                   </div>
-                  <p className="text-sm text-slate-500 line-clamp-2">{ann.content}</p>
-                  <p className="text-[10px] text-slate-400 mt-2 font-medium">
+                  <p className="text-base text-slate-500 line-clamp-2">{ann.content}</p>
+                  <p className="text-xs text-slate-400 mt-2 font-medium">
                     {new Date(ann.date).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
@@ -186,8 +186,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
                       <span className="material-icons-round text-2xl">event_note</span>
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 dark:text-white">{sch.name}</h3>
-                      <p className="text-xs text-slate-500">{sch.category} • {getScheduleTimeRange(sch)}</p>
+                      <h3 className="font-bold text-lg text-slate-900 dark:text-white">{sch.name}</h3>
+                      <p className="text-sm text-slate-500">{sch.category} • {getScheduleTimeRange(sch)}</p>
                     </div>
                   </div>
                   <button className="text-slate-400"><span className="material-icons-round">more_vert</span></button>
