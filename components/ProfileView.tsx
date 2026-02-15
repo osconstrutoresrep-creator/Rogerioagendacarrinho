@@ -29,7 +29,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, updateDB, onBack, onLog
         <button onClick={onBack} className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors">
           <span className="material-icons-round">arrow_back_ios_new</span>
         </button>
-        <h1 className="text-lg font-bold">Meu Perfil</h1>
+        <h1 className="text-2xl font-bold">Meu Perfil</h1>
         <button onClick={onLogout} className="text-sm font-bold text-rose-500">Sair</button>
       </header>
 

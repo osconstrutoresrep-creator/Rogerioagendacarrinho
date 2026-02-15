@@ -107,7 +107,7 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, onBack 
           <button onClick={onBack} className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors">
             <span className="material-icons-round">arrow_back_ios_new</span>
           </button>
-          <h1 className="text-lg font-bold">Todos Agendamentos</h1>
+          <h1 className="text-2xl font-bold">Todos Agendamentos</h1>
           <div className="w-10"></div>
         </div>
 

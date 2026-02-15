@@ -153,7 +153,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
           <span className="material-icons-round">arrow_back_ios_new</span>
         </button>
         <div className="text-center">
-          <h1 className="text-lg font-bold">{schedule.name}</h1>
+          <h1 className="text-2xl font-bold">{schedule.name}</h1>
           <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">{schedule.category} • {getScheduleTimeRange(schedule)}</p>
         </div>
         <div className="w-10"></div>
