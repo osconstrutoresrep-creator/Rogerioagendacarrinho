@@ -43,6 +43,63 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, onBack 
     return matchesDate && matchesName;
   });
 
+  const now = new Date();
+  const upcoming = filteredAppointments
+    .filter(app => new Date(`${app.date}T${app.time}`) > now)
+    .sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime());
+
+  const past = filteredAppointments
+    .filter(app => new Date(`${app.date}T${app.time}`) <= now)
+    .sort((a, b) => new Date(`${b.date}T${b.time}`).getTime() - new Date(`${a.date}T${a.time}`).getTime());
+
+  const renderAppointmentCard = (app: Appointment) => {
+    const sch = db.schedules.find(s => s.id === app.scheduleId);
+    return (
+      <div key={app.id} className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
+        <div onClick={() => setSelectedAppointment(app)} className="cursor-pointer">
+          <div className="flex justify-between items-start mb-3">
+            <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded text-[9px] font-bold uppercase">
+              {sch?.name || 'Agenda Removida'}
+            </span>
+            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+              {formatDateBR(app.date)}
+            </span>
+          </div>
+
+          <div className="flex gap-4 mb-4">
+            <div className="w-16 h-16 bg-slate-50 dark:bg-slate-900 rounded-2xl flex flex-col items-center justify-center border border-slate-100 dark:border-slate-700">
+              <span className="text-[8px] font-bold text-slate-400 uppercase">Início</span>
+              <span className="text-lg font-bold">{app.time}</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-sm">Participantes:</h3>
+              <div className="flex flex-col gap-1 mt-1">
+                {app.participants.map((p, idx) => (
+                  <p key={idx} className="text-xs text-slate-500 font-medium flex items-center gap-1">
+                    <span className="material-icons-round text-xs">person</span>
+                    {getUserName(p)}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-2 pt-3 border-t border-slate-50 dark:border-slate-700">
+          <button className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-[10px] font-bold uppercase transition-colors">
+            Editar
+          </button>
+          <button
+            onClick={() => handleDelete(app.id)}
+            className="flex-1 py-2 rounded-lg bg-rose-50 text-rose-500 text-[10px] font-bold uppercase transition-colors"
+          >
+            Excluir
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-full bg-background-light dark:bg-background-dark">
       <header className="px-4 pt-12 pb-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-10 flex flex-col gap-4">
@@ -81,54 +138,23 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, onBack 
             <p>Nenhum agendamento encontrado.</p>
           </div>
         ) : (
-          filteredAppointments.map(app => {
-            const sch = db.schedules.find(s => s.id === app.scheduleId);
-            return (
-              <div key={app.id} className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-100 dark:border-slate-700 transition-all hover:shadow-md">
-                <div onClick={() => setSelectedAppointment(app)} className="cursor-pointer">
-                  <div className="flex justify-between items-start mb-3">
-                    <span className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 rounded text-[9px] font-bold uppercase">
-                      {sch?.name || 'Agenda Removida'}
-                    </span>
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                      {formatDateBR(app.date)}
-                    </span>
-                  </div>
+          <>
+            {upcoming.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Próximos Agendamentos ({upcoming.length})</h2>
+                {upcoming.map(renderAppointmentCard)}
+              </div>
+            )}
 
-                  <div className="flex gap-4 mb-4">
-                    <div className="w-16 h-16 bg-slate-50 dark:bg-slate-900 rounded-2xl flex flex-col items-center justify-center border border-slate-100 dark:border-slate-700">
-                      <span className="text-[8px] font-bold text-slate-400 uppercase">Início</span>
-                      <span className="text-lg font-bold">{app.time}</span>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-bold text-sm">Participantes:</h3>
-                      <div className="flex flex-col gap-1 mt-1">
-                        {app.participants.map((p, idx) => (
-                          <p key={idx} className="text-xs text-slate-500 font-medium flex items-center gap-1">
-                            <span className="material-icons-round text-xs">person</span>
-                            {getUserName(p)}
-                          </p>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div className="flex gap-2 pt-3 border-t border-slate-50 dark:border-slate-700">
-                  <button className="flex-1 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 text-[10px] font-bold uppercase transition-colors">
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(app.id)}
-                    className="flex-1 py-2 rounded-lg bg-rose-50 text-rose-500 text-[10px] font-bold uppercase transition-colors"
-                  >
-                    Excluir
-                  </button>
+            {past.length > 0 && (
+              <div className="space-y-4 mt-8">
+                <h2 className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Agendamentos Realizados ({past.length})</h2>
+                <div className="opacity-75">
+                  {past.map(renderAppointmentCard)}
                 </div>
               </div>
-            );
-          })
+            )}
+          </>
         )}
       </main>
 

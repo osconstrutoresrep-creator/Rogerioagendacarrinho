@@ -16,7 +16,15 @@ interface UserDashboardProps {
 }
 
 const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, onNavigate, onSelectSchedule, onLogout }) => {
-  const myAppointments = db.appointments.filter(app => app.participants.includes(user.id));
+  const now = new Date();
+  const myAppointments = db.appointments.filter(app => {
+    if (!app.participants.includes(user.id)) return false;
+
+    // Create Date object for appointment (assuming local time)
+    // Using T12:00:00 logic if time is missing, but here we have app.time
+    const appDate = new Date(`${app.date}T${app.time}`);
+    return appDate > now;
+  });
 
   const [selectedAppointment, setSelectedAppointment] = React.useState<Appointment | null>(null);
 

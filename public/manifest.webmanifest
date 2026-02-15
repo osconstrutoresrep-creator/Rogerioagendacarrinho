@@ -1,0 +1,17 @@
+{
+    "name": "Agendai - Gestão de Agendas",
+    "short_name": "Agendai",
+    "description": "Sistema de gestão de agendas para carrinhos e displays.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#137fec",
+    "icons": [
+        {
+            "src": "/app_icon_512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
