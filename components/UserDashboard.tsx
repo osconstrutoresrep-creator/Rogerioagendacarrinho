@@ -116,7 +116,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                         <p className="text-slate-500 font-medium">{app.time}</p>
                       </div>
                       <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400">
-                        <span className="material-icons-round text-sm">touch_app</span>
+                        <span className="material-icons-round text-xl">touch_app</span>
                       </div>
                     </div>
                   </div>
