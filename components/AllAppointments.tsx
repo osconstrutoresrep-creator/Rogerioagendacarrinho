@@ -380,6 +380,27 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, refresh
                   </div>
                 </div>
 
+                {/* Daily scale note */}
+                <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/20">
+                  <h3 className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                    <span className="material-icons-round text-sm">event_note</span>
+                    Escala do Dia
+                  </h3>
+                  <div className="space-y-2">
+                    {db.appointments
+                      .filter(app => app.date === selectedAppointment.date && app.scheduleId === selectedAppointment.scheduleId)
+                      .sort((a, b) => a.time.localeCompare(b.time))
+                      .map(app => (
+                        <div key={app.id} className="text-xs flex gap-2">
+                          <span className="font-bold text-blue-700 dark:text-blue-300 min-w-[45px]">{app.time}:</span>
+                          <span className="text-blue-600 dark:text-blue-400">
+                            {app.participants.map(p => getUserName(p)).join(', ')}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
                 {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.observation && (
                   <div className="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-900/20">
                     <h3 className="text-sm font-bold text-amber-900 dark:text-amber-100 mb-1 flex items-center gap-2">
