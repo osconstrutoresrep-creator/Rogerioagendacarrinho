@@ -219,13 +219,21 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                 </div>
               )}
 
-              <button
-                onClick={() => handleCancel(selectedAppointment.id)}
-                className="w-full py-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold transition-colors flex items-center justify-center gap-2"
-              >
-                <span className="material-icons-round">cancel</span>
-                Cancelar Agendamento
-              </button>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => handleCancel(selectedAppointment.id)}
+                  className="w-full py-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold transition-colors flex items-center justify-center gap-2"
+                >
+                  <span className="material-icons-round">cancel</span>
+                  Cancelar Agendamento
+                </button>
+                <button
+                  onClick={() => setSelectedAppointment(null)}
+                  className="w-full py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold transition-colors flex items-center justify-center gap-2 hover:bg-slate-200"
+                >
+                  Voltar
+                </button>
+              </div>
             </div>
           </div>
         </div>
