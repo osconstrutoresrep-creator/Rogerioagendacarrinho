@@ -392,20 +392,28 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, refresh
                   </div>
                 )}
 
-                <div className="flex gap-3">
+                <div className="flex flex-col gap-3">
+                  <div className="flex gap-3">
+                    <button
+                      onClick={startEdit}
+                      className="flex-1 py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-colors flex items-center justify-center gap-2 hover:bg-slate-200"
+                    >
+                      <span className="material-icons-round">edit</span>
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => handleDelete(selectedAppointment.id)}
+                      className="flex-1 py-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold transition-colors flex items-center justify-center gap-2"
+                    >
+                      <span className="material-icons-round">delete</span>
+                      Excluir
+                    </button>
+                  </div>
                   <button
-                    onClick={startEdit}
-                    className="flex-1 py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold transition-colors flex items-center justify-center gap-2 hover:bg-slate-200"
+                    onClick={() => setSelectedAppointment(null)}
+                    className="w-full py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold transition-colors flex items-center justify-center gap-2 hover:bg-slate-200"
                   >
-                    <span className="material-icons-round">edit</span>
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(selectedAppointment.id)}
-                    className="flex-1 py-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold transition-colors flex items-center justify-center gap-2"
-                  >
-                    <span className="material-icons-round">delete</span>
-                    Excluir
+                    Voltar
                   </button>
                 </div>
               </div>
