@@ -61,23 +61,42 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
 
     // If start time is after end time (e.g. crossing midnight or invalid), don't generate slots
     // Also if the day is not in daysOfWeek (though UI shouldn't allow selecting it, good to be safe)
+    // If start time is after end time (e.g. crossing midnight or invalid), don't generate slots
+    // Also if the day is not in daysOfWeek (though UI shouldn't allow selecting it, good to be safe)
     if (!schedule.daysOfWeek.includes(dayOfWeek)) return [];
+
+    const now = new Date();
 
     while (current < end) {
       const timeStr = current.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      const apps = db.appointments.filter(a => a.scheduleId === schedule.id && a.date === selectedDate && a.time === timeStr);
 
-      let totalParticipants = 0;
-      apps.forEach(a => {
-        totalParticipants += a.participants.length;
-      });
+      // Check if slot is in the past (only for today)
+      let isSlotPast = false;
+      if (selectedDate === now.toISOString().split('T')[0]) {
+        const slotTimeCount = current.getHours() * 60 + current.getMinutes();
+        const currentTimeCount = now.getHours() * 60 + now.getMinutes();
+        if (slotTimeCount <= currentTimeCount) {
+          isSlotPast = true;
+        }
+      }
 
-      slots.push({
-        time: timeStr,
-        availableSlots: Math.max(0, schedule.maxParticipantsPerSlot - totalParticipants)
-      });
+      if (!isSlotPast) {
+        const apps = db.appointments.filter(a => a.scheduleId === schedule.id && a.date === selectedDate && a.time === timeStr);
+
+        let totalParticipants = 0;
+        apps.forEach(a => {
+          totalParticipants += a.participants.length;
+        });
+
+        slots.push({
+          time: timeStr,
+          availableSlots: Math.max(0, schedule.maxParticipantsPerSlot - totalParticipants)
+        });
+      }
       current.setMinutes(current.getMinutes() + schedule.slotDuration);
     }
+
+
     return slots;
   }, [schedule, selectedDate, db.appointments]);
 
@@ -162,12 +181,32 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
       <main className="flex-1 overflow-y-auto pb-48">
         <section className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 py-4">
           {/* Month Header */}
-          <div className="px-5 mb-2">
+          <div className="px-5 mb-2 flex justify-between items-center">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white capitalize">
               {new Date(selectedDate + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
             </h3>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  const container = document.getElementById('date-scroll-container');
+                  if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <span className="material-icons-round text-sm">chevron_left</span>
+              </button>
+              <button
+                onClick={() => {
+                  const container = document.getElementById('date-scroll-container');
+                  if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
+                }}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <span className="material-icons-round text-sm">chevron_right</span>
+              </button>
+            </div>
           </div>
-          <div className="flex overflow-x-auto hide-scrollbar px-5 space-x-3">
+          <div id="date-scroll-container" className="flex overflow-x-auto hide-scrollbar px-5 space-x-3 scroll-smooth">
             {dates.map(d => (
               <button
                 key={d.full}

@@ -340,7 +340,10 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
                 </div>
               </div>
 
-              <button type="submit" className="w-full bg-primary text-white font-bold py-4 rounded-xl mt-4">{editingId ? 'Salvar Alterações' : 'Criar Agenda'}</button>
+              <div className="flex gap-3 mt-6">
+                <button type="button" onClick={closeModal} className="flex-1 bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold py-4 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Voltar</button>
+                <button type="submit" className="flex-1 bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary-dark transition-colors">{editingId ? 'Salvar Alterações' : 'Criar Agenda'}</button>
+              </div>
             </form>
           </div>
         </div>

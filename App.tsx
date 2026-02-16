@@ -117,7 +117,7 @@ const App: React.FC = () => {
       case 'PROFILE':
         return <ProfileView user={currentUser!} updateDB={updateDB} onBack={() => setCurrentView('DASHBOARD')} onLogout={handleLogout} />;
       case 'ALL_APPOINTMENTS':
-        return <AllAppointments db={db} updateDB={updateDB} onBack={() => setCurrentView('DASHBOARD')} />;
+        return <AllAppointments db={db} updateDB={updateDB} refreshData={fetchData} onBack={() => setCurrentView('DASHBOARD')} />;
       default:
         return currentUser?.role === 'ADMIN' ? (
           <AdminDashboard

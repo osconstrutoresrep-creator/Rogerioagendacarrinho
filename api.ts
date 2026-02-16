@@ -207,6 +207,22 @@ export const api = {
         return { data, error };
     },
 
+    updateAppointment: async (appointment: Appointment): Promise<{ data: Appointment | null, error: any }> => {
+        console.log('API: Updating appointment with data:', appointment);
+        const { data, error } = await supabase.from('appointments').update({
+            schedule_id: appointment.scheduleId,
+            date: appointment.date,
+            time: appointment.time,
+            participants: appointment.participants,
+            created_by: appointment.createdBy
+        }).eq('id', appointment.id).select().single();
+
+        if (error) {
+            console.error("API Error updating appointment:", error);
+        }
+        return { data, error };
+    },
+
     deleteAppointment: async (id: string): Promise<void> => {
         await supabase.from('appointments').delete().eq('id', id);
     },
