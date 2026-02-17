@@ -21,22 +21,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
     {
       targetId: 'user-dashboard-title',
       title: 'Olá!',
-      content: 'Este é o seu painel pessoal.'
-    },
-    {
-      targetId: 'next-appointments',
-      title: 'Seus Horários',
-      content: 'Aqui ficam os seus próximos agendamentos.'
-    },
-    {
-      targetId: 'available-schedules',
-      title: 'Agendar',
-      content: 'Escolha uma escala para reservar um novo horário.'
-    },
-    {
-      targetId: 'announcements',
-      title: 'Avisos',
-      content: 'Fique por dentro das novidades da congregação.'
+      content: 'Este é seu painel pessoal. Aqui você pode ver seus horários, agendar novas escalas e ver o mural de avisos.'
     }
   ];
 

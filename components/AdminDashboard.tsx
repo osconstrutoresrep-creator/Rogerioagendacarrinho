@@ -21,22 +21,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
     {
       targetId: 'admin-dashboard-title',
       title: 'Administração',
-      content: 'Painel de controle para gerenciar toda a operação.'
-    },
-    {
-      targetId: 'admin-summary',
-      title: 'Resumo',
-      content: 'Veja os números e agendamentos do dia.'
-    },
-    {
-      targetId: 'admin-announcements',
-      title: 'Avisos',
-      content: 'Crie e gerencie os comunicados oficiais.'
-    },
-    {
-      targetId: 'admin-navigation',
-      title: 'Menu',
-      content: 'Acesse usuários, escalas e configurações aqui.'
+      content: 'Painel de controle. Aqui você gerencia agendamentos, usuários, escalas e avisos da congregação.'
     }
   ];
 
