@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { User, Schedule, Appointment, View } from '../types';
+import TutorialOverlay, { TutorialStep } from './TutorialOverlay';
 
 import { api } from '../api';
 import { getScheduleTimeRange } from '../lib/utils';
@@ -16,6 +17,24 @@ interface UserDashboardProps {
 }
 
 const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, onNavigate, onSelectSchedule, onLogout }) => {
+  const tutorialSteps: TutorialStep[] = [
+    {
+      targetId: 'next-appointments',
+      title: 'Seus Agendamentos',
+      content: 'Aqui você verá todos os horários que você já reservou para o display ou carrinho.'
+    },
+    {
+      targetId: 'available-schedules',
+      title: 'Novo Agendamento',
+      content: 'Clique em uma das agendas disponíveis para escolher um dia e horário para o seu testemunho.'
+    },
+    {
+      targetId: 'announcements',
+      title: 'Mural de Avisos',
+      content: 'Fique atento aos avisos importantes da congregação que aparecerão aqui.'
+    }
+  ];
+
   const now = new Date();
   const myAppointments = db.appointments
     .filter(app => {
@@ -67,7 +86,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
 
           {/* Announcements Section */}
           {db.announcements && db.announcements.filter(a => a.active).length > 0 && (
-            <div className="mb-8">
+            <div id="announcements" className="mb-8">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <span className="material-icons-round text-primary">campaign</span>
                 Mural de Avisos
@@ -87,10 +106,10 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
           )}
 
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Meus Próximos Horários</h2>
+            <h2 className="text-lg font-bold uppercase tracking-tight text-slate-900 dark:text-white">Agendamentos de {user.name}</h2>
             <span className="text-xs font-semibold text-primary">{myAppointments.length} agendados</span>
           </div>
-          <div className="space-y-4">
+          <div id="next-appointments" className="space-y-4">
             {myAppointments.length === 0 ? (
               <div className="bg-slate-50 dark:bg-slate-800 p-8 rounded-xl text-center border-2 border-dashed border-slate-200 dark:border-slate-700">
                 <span className="material-icons-round text-4xl text-slate-300 mb-2">event_busy</span>
@@ -113,7 +132,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                     <div className="mt-2 flex justify-between items-end">
                       <div>
                         <p className="text-lg font-bold">{new Date(app.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' })}</p>
-                        <p className="text-slate-500 font-medium">{app.time}</p>
+                        <p className="text-slate-700 dark:text-slate-300 font-bold">{app.time}</p>
                       </div>
                       <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400">
                         <span className="material-icons-round text-xl">touch_app</span>
@@ -126,7 +145,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
           </div>
         </section>
 
-        <section>
+        <section id="available-schedules">
           <h2 className="text-lg font-bold mb-4">Disponíveis para Agendar</h2>
           <div className="grid grid-cols-1 gap-4">
             {db.schedules.filter(s => s.active).map(sch => (
@@ -147,6 +166,9 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                       {sch.observation}
                     </p>
                   )}
+                </div>
+                <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-300 group-hover:text-primary transition-colors">
+                  <span className="material-icons-round">touch_app</span>
                 </div>
                 <span className="material-icons-round text-slate-300">chevron_right</span>
               </div>
@@ -267,6 +289,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
           </div>
         </div>
       )}
+      <TutorialOverlay pageKey="user_dashboard" steps={tutorialSteps} />
     </div >
   );
 };

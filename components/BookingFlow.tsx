@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { User, Schedule, Appointment } from '../types';
+import TutorialOverlay, { TutorialStep } from './TutorialOverlay';
 
 import { api } from '../api';
 import { getScheduleTimeRange } from '../lib/utils';
@@ -23,6 +24,24 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
 
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      targetId: 'booking-calendar',
+      title: 'Escolha a Data',
+      content: 'Navegue entre os meses e escolha um dia disponível para o seu testemunho.'
+    },
+    {
+      targetId: 'booking-slots',
+      title: 'Escolha o Horário',
+      content: 'Os horários em branco estão livres. Se estiver ocupado, você verá um aviso.'
+    },
+    {
+      targetId: 'booking-action',
+      title: 'Finalize o Agendamento',
+      content: 'Após escolher o horário, preencha os dados e confirme sua reserva.'
+    }
+  ];
 
   // Participant State
   const [primaryUserId, setPrimaryUserId] = useState<string>(user.id);
@@ -183,7 +202,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
       </header>
 
       <main className="flex-1 overflow-y-auto pb-48">
-        <section className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 py-6">
+        <section id="booking-calendar" className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 py-6">
           {/* Calendar View */}
           <div className="px-5">
             <div className="flex items-center justify-between mb-6">
@@ -277,7 +296,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
           </div>
         </section>
 
-        <section className="px-5 py-6">
+        <section id="booking-slots" className="px-5 py-6">
           <h3 className="flex items-center gap-2 font-bold mb-4 text-slate-700 dark:text-slate-300">
             <span className="material-icons-round text-primary">schedule</span>
             Horários Disponíveis
@@ -308,7 +327,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
       </main>
 
       {selectedTime && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] p-6 z-30 animate-fade-in-up">
+        <div id="booking-action" className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-[2.5rem] shadow-[0_-10px_40px_rgba(0,0,0,0.2)] p-6 z-30 animate-fade-in-up">
           <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-6"></div>
 
           <div className="flex justify-between items-center mb-6">
@@ -427,6 +446,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
           </div>
         </div>
       )}
+      <TutorialOverlay pageKey="booking_flow" steps={tutorialSteps} />
     </div>
   );
 };

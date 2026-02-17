@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { User, Schedule, Appointment, View } from '../types';
+import TutorialOverlay, { TutorialStep } from './TutorialOverlay';
 
 import { api } from '../api';
 import { getScheduleTimeRange } from '../lib/utils';
@@ -16,6 +17,24 @@ interface AdminDashboardProps {
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, onNavigate, onSelectSchedule, onLogout }) => {
+  const tutorialSteps: TutorialStep[] = [
+    {
+      targetId: 'admin-summary',
+      title: 'Gestão Administrativa',
+      content: 'Como administrador, você tem controle total sobre as escalas, usuários e avisos.'
+    },
+    {
+      targetId: 'admin-announcements',
+      title: 'Gerenciar Avisos',
+      content: 'Crie novos avisos ou edite os existentes para manter os publicadores informados.'
+    },
+    {
+      targetId: 'admin-navigation',
+      title: 'Navegação',
+      content: 'Use os ícones abaixo para alternar entre o painel, a agenda completa, gestão de usuários e configurações.'
+    }
+  ];
+
   // Announcement State
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [editingAnnouncementId, setEditingAnnouncementId] = useState<string | null>(null);
@@ -95,7 +114,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
       </header>
 
       <main className="flex-1 overflow-y-auto px-6 pb-24 space-y-8">
-        <section>
+        <section id="admin-summary">
           <div className="flex justify-between items-end mb-4">
             <h2 className="text-lg font-bold">Resumo do Dia</h2>
             <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">Hoje, {today}</span>
@@ -205,7 +224,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
         </section>
       </main>
 
-      <nav className="fixed bottom-0 w-full bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 pb-8 pt-3 px-6 flex justify-between items-center z-20">
+      <nav id="admin-navigation" className="fixed bottom-0 w-full bg-white dark:bg-background-dark border-t border-slate-100 dark:border-slate-800 pb-8 pt-3 px-6 flex justify-between items-center z-20">
         <button onClick={() => onNavigate('DASHBOARD')} className="flex flex-col items-center gap-1 text-primary">
           <span className="material-icons-round">dashboard</span>
           <span className="text-[10px] font-bold uppercase">Painel</span>
@@ -295,6 +314,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
         </div>
       )}
 
+      <TutorialOverlay pageKey="admin_dashboard" steps={tutorialSteps} />
     </div>
   );
 };
