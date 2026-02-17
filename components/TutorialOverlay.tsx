@@ -104,7 +104,7 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ pageKey, steps }) => 
         <div className="fixed inset-0 z-[100] pointer-events-none">
             {/* Background Dim - only visible when target is found */}
             <div
-                className={`absolute inset-0 bg-black/40 backdrop-blur-[3px] transition-opacity duration-300 pointer-events-auto ${targetFound ? 'opacity-100' : 'opacity-0'}`}
+                className={`absolute inset-0 bg-black/40 backdrop-blur-[3px] transition-all duration-300 ${targetFound ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                 onClick={handleComplete}
             />
 
