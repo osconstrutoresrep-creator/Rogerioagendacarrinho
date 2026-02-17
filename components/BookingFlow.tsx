@@ -29,7 +29,17 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
     {
       targetId: 'booking-flow-title',
       title: 'Agendar',
-      content: 'Área de agendamento. Escolha o dia no calendário e selecione um dos horários disponíveis para reservar.'
+      content: 'Vamos reservar seu próximo horário.'
+    },
+    {
+      targetId: 'booking-calendar',
+      title: 'Calendário',
+      content: 'Primeiro, escolha o dia desejado.'
+    },
+    {
+      targetId: 'booking-slots',
+      title: 'Horários',
+      content: 'Agora, selecione um horário disponível.'
     }
   ];
 
