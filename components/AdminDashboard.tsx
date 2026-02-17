@@ -19,19 +19,24 @@ interface AdminDashboardProps {
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, onNavigate, onSelectSchedule, onLogout }) => {
   const tutorialSteps: TutorialStep[] = [
     {
+      targetId: 'admin-dashboard-title',
+      title: 'Administração',
+      content: 'Painel de controle para gerenciar toda a operação.'
+    },
+    {
       targetId: 'admin-summary',
-      title: 'Gestão Administrativa',
-      content: 'Como administrador, você tem controle total sobre as escalas, usuários e avisos.'
+      title: 'Resumo',
+      content: 'Veja os números e agendamentos do dia.'
     },
     {
       targetId: 'admin-announcements',
-      title: 'Gerenciar Avisos',
-      content: 'Crie novos avisos ou edite os existentes para manter os publicadores informados.'
+      title: 'Avisos',
+      content: 'Crie e gerencie os comunicados oficiais.'
     },
     {
       targetId: 'admin-navigation',
-      title: 'Navegação',
-      content: 'Use os ícones abaixo para alternar entre o painel, a agenda completa, gestão de usuários e configurações.'
+      title: 'Menu',
+      content: 'Acesse usuários, escalas e configurações aqui.'
     }
   ];
 
@@ -100,7 +105,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
     <div className="flex flex-col h-full overflow-hidden">
       <header className="px-6 pt-12 pb-6 bg-white dark:bg-background-dark sticky top-0 z-10">
         <div className="flex justify-between items-center mb-6">
-          <div>
+          <div id="admin-dashboard-title">
             <p className="text-sm text-slate-500 font-medium">Bom dia, {user.name.split(' ')[0]}</p>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Painel de Gestão</h1>
           </div>
@@ -130,7 +135,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
           </div>
         </section>
 
-        <section>
+        <section id="admin-announcements">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Mural de Avisos</h2>
             <button

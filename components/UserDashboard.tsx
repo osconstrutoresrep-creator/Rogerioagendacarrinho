@@ -19,19 +19,24 @@ interface UserDashboardProps {
 const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, onNavigate, onSelectSchedule, onLogout }) => {
   const tutorialSteps: TutorialStep[] = [
     {
+      targetId: 'user-dashboard-title',
+      title: 'Olá!',
+      content: 'Este é o seu painel pessoal.'
+    },
+    {
       targetId: 'next-appointments',
-      title: 'Seus Agendamentos',
-      content: 'Aqui você verá todos os horários que você já reservou para o display ou carrinho.'
+      title: 'Seus Horários',
+      content: 'Aqui ficam os seus próximos agendamentos.'
     },
     {
       targetId: 'available-schedules',
-      title: 'Novo Agendamento',
-      content: 'Clique em uma das agendas disponíveis para escolher um dia e horário para o seu testemunho.'
+      title: 'Agendar',
+      content: 'Escolha uma escala para reservar um novo horário.'
     },
     {
       targetId: 'announcements',
-      title: 'Mural de Avisos',
-      content: 'Fique atento aos avisos importantes da congregação que aparecerão aqui.'
+      title: 'Avisos',
+      content: 'Fique por dentro das novidades da congregação.'
     }
   ];
 
@@ -69,7 +74,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
     <div className="flex flex-col h-full overflow-hidden">
       <header className="px-6 pt-12 pb-6 bg-white dark:bg-background-dark sticky top-0 z-10">
         <div className="flex justify-between items-center mb-6">
-          <div>
+          <div id="user-dashboard-title">
             <p className="text-sm text-slate-500 font-medium">Bem-vindo,</p>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{user.name.split(' ')[0]}</h1>
           </div>

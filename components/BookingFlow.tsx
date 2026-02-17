@@ -27,19 +27,19 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
 
   const tutorialSteps: TutorialStep[] = [
     {
+      targetId: 'booking-flow-title',
+      title: 'Agendar',
+      content: 'Vamos reservar seu próximo horário.'
+    },
+    {
       targetId: 'booking-calendar',
-      title: 'Escolha a Data',
-      content: 'Navegue entre os meses e escolha um dia disponível para o seu testemunho.'
+      title: 'Calendário',
+      content: 'Primeiro, escolha o dia desejado.'
     },
     {
       targetId: 'booking-slots',
-      title: 'Escolha o Horário',
-      content: 'Os horários em branco estão livres. Se estiver ocupado, você verá um aviso.'
-    },
-    {
-      targetId: 'booking-action',
-      title: 'Finalize o Agendamento',
-      content: 'Após escolher o horário, preencha os dados e confirme sua reserva.'
+      title: 'Horários',
+      content: 'Agora, selecione um horário disponível.'
     }
   ];
 
@@ -124,10 +124,10 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
   }, [schedule, selectedDate, db.appointments]);
 
   const filterUsers = (query: string) => {
-    return db.users.filter(u =>
-      u.name.toLowerCase().includes(query.toLowerCase()) ||
-      u.email.toLowerCase().includes(query.toLowerCase())
-    );
+    if (!query) return [];
+    return db.users
+      .filter(u => u.name.toLowerCase().startsWith(query.toLowerCase()))
+      .slice(0, 5);
   };
 
   const handleBooking = async () => {
@@ -194,7 +194,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
         <button onClick={onBack} className="p-2 text-primary rounded-full hover:bg-primary/10 transition-colors">
           <span className="material-icons-round">arrow_back_ios_new</span>
         </button>
-        <div className="text-center">
+        <div id="booking-flow-title" className="text-center">
           <h1 className="text-2xl font-bold">{schedule.name}</h1>
           <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">{schedule.category} • {getScheduleTimeRange(schedule)}</p>
         </div>
