@@ -36,16 +36,20 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ pageKey, steps }) => 
 
         if (targetElement) {
             setTargetFound(true);
+
+            // Scroll into view ONLY ONCE when step changes
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
             const updatePosition = () => {
                 const rect = targetElement.getBoundingClientRect();
-                const scrollY = window.scrollY;
 
+                // Since parent is fixed inset-0, we use viewport coordinates directly
                 let arrowDirection: 'up' | 'down' = 'down';
-                let top = rect.top + scrollY - 20;
+                let top = rect.top - 20;
 
                 // If target is too close to top, show bubble below
                 if (rect.top < 180) {
-                    top = rect.bottom + scrollY + 20;
+                    top = rect.bottom + 20;
                     arrowDirection = 'up';
                 }
 
@@ -58,15 +62,15 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ pageKey, steps }) => 
                 if (left > window.innerWidth - (bWidth / 2 + padding)) left = window.innerWidth - (bWidth / 2 + padding);
 
                 setBubblePosition({ top, left, arrowDirection });
-
-                // Scroll into view if needed
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             };
 
-            updatePosition();
+            // Small delay to allow scroll to settle before measuring
+            const timer = setTimeout(updatePosition, 100);
+
             window.addEventListener('resize', updatePosition);
             window.addEventListener('scroll', updatePosition);
             return () => {
+                clearTimeout(timer);
                 window.removeEventListener('resize', updatePosition);
                 window.removeEventListener('scroll', updatePosition);
             };
