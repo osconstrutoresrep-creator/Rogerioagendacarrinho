@@ -17,6 +17,10 @@ interface BookingFlowProps {
 const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshData, onBack }) => {
   const isAdmin = user.role === 'ADMIN';
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [schedule.id]);
+
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
@@ -179,47 +183,97 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
       </header>
 
       <main className="flex-1 overflow-y-auto pb-48">
-        <section className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 py-4">
-          {/* Month Header */}
-          <div className="px-5 mb-2 flex justify-between items-center">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white capitalize">
-              {new Date(selectedDate + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-            </h3>
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  const container = document.getElementById('date-scroll-container');
-                  if (container) container.scrollBy({ left: -200, behavior: 'smooth' });
-                }}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-              >
-                <span className="material-icons-round text-sm">chevron_left</span>
-              </button>
-              <button
-                onClick={() => {
-                  const container = document.getElementById('date-scroll-container');
-                  if (container) container.scrollBy({ left: 200, behavior: 'smooth' });
-                }}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-              >
-                <span className="material-icons-round text-sm">chevron_right</span>
-              </button>
+        <section className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 py-6">
+          {/* Calendar View */}
+          <div className="px-5">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white capitalize">
+                {new Date(selectedDate + 'T12:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              </h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const d = new Date(selectedDate + 'T12:00:00');
+                    d.setMonth(d.getMonth() - 1);
+                    setSelectedDate(d.toISOString().split('T')[0]);
+                    setSelectedTime(null);
+                  }}
+                  className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <span className="material-icons-round">chevron_left</span>
+                </button>
+                <button
+                  onClick={() => {
+                    const d = new Date(selectedDate + 'T12:00:00');
+                    d.setMonth(d.getMonth() + 1);
+                    setSelectedDate(d.toISOString().split('T')[0]);
+                    setSelectedTime(null);
+                  }}
+                  className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <span className="material-icons-round">chevron_right</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <div id="date-scroll-container" className="flex overflow-x-auto hide-scrollbar px-5 space-x-3 scroll-smooth">
-            {dates.map(d => (
-              <button
-                key={d.full}
-                onClick={() => { setSelectedDate(d.full); setSelectedTime(null); }}
-                className={`flex flex-col items-center justify-center min-w-[3.5rem] h-[4.5rem] rounded-2xl transition-all ${selectedDate === d.full
-                  ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                  : 'bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700'
-                  }`}
-              >
-                <span className={`text-[10px] font-bold ${selectedDate === d.full ? 'text-white/80' : 'text-slate-400'}`}>{d.weekday}</span>
-                <span className="text-xl font-bold">{d.day}</span>
-              </button>
-            ))}
+
+            <div className="grid grid-cols-7 gap-1 mb-2">
+              {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(day => (
+                <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase py-2">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-1">
+              {(() => {
+                const date = new Date(selectedDate + 'T12:00:00');
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                const firstDayOfMonth = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const calendarDays = [];
+                // Add empty slots for the first week
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                  calendarDays.push(<div key={`empty-${i}`} className="h-12" />);
+                }
+
+                // Add real days
+                for (let day = 1; day <= daysInMonth; day++) {
+                  const dayDate = new Date(year, month, day);
+                  const dateStr = dayDate.toISOString().split('T')[0];
+                  const isToday = dayDate.getTime() === today.getTime();
+                  const isPast = dayDate.getTime() < today.getTime();
+                  const isSelected = selectedDate === dateStr;
+                  const isAvailable = schedule.daysOfWeek.includes(dayDate.getDay());
+
+                  calendarDays.push(
+                    <button
+                      key={day}
+                      disabled={isPast || !isAvailable}
+                      onClick={() => {
+                        setSelectedDate(dateStr);
+                        setSelectedTime(null);
+                      }}
+                      className={`h-12 w-full rounded-xl flex flex-col items-center justify-center transition-all relative ${isSelected
+                        ? 'bg-primary text-white shadow-md shadow-primary/30 z-10'
+                        : isPast || !isAvailable
+                          ? 'text-slate-300 dark:text-slate-700 cursor-not-allowed'
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                    >
+                      <span className="text-sm font-bold">{day}</span>
+                      {isToday && !isSelected && (
+                        <div className="absolute bottom-1.5 w-1 h-1 bg-primary rounded-full"></div>
+                      )}
+                    </button>
+                  );
+                }
+                return calendarDays;
+              })()}
+            </div>
           </div>
         </section>
 
@@ -242,9 +296,11 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                   }`}
               >
                 <span className="text-lg font-bold">{slot.time}</span>
-                {/* <span className="text-[9px] font-bold uppercase tracking-tighter opacity-70">
-                {slot.availableSlots} vagas
-              </span> */}
+                {slot.availableSlots <= 0 && (
+                  <span className="text-[8px] font-bold uppercase tracking-tighter opacity-70 mt-1 leading-tight text-center">
+                    Agendado por outro publicador
+                  </span>
+                )}
               </button>
             ))}
           </div>

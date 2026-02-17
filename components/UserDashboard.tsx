@@ -141,6 +141,12 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">{sch.name}</h3>
                   <p className="text-sm text-slate-500">{sch.category} • {getScheduleTimeRange(sch)}</p>
+                  {sch.observation && (
+                    <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1 italic">
+                      <span className="material-icons-round text-xs">info</span>
+                      {sch.observation}
+                    </p>
+                  )}
                 </div>
                 <span className="material-icons-round text-slate-300">chevron_right</span>
               </div>
