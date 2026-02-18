@@ -242,6 +242,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
                     <div>
                       <h3 className="font-bold text-lg text-slate-900 dark:text-white">{sch.name}</h3>
                       <p className="text-sm text-slate-500">{sch.category} • {getScheduleTimeRange(sch)}</p>
+                      {sch.observation && (
+                        <p className="text-[11px] text-slate-400 mt-1 flex items-center gap-1 italic">
+                          <span className="material-icons-round text-xs">info</span>
+                          {sch.observation}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <button className="text-slate-400"><span className="material-icons-round">more_vert</span></button>
