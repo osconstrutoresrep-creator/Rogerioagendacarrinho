@@ -34,8 +34,10 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
     active: true,
     daysOfWeek: [1, 2, 3, 4, 5],
     observation: '',
-    daysConfig: {}
+    daysConfig: {},
+    dateOverrides: {}
   });
+  const [newOverride, setNewOverride] = useState({ date: '', startTime: '08:00', endTime: '18:00', active: true });
 
   const toggleScheduleActive = async (id: string) => {
     const s = db.schedules.find(s => s.id === id);
@@ -64,7 +66,8 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
       active: schedule.active,
       daysOfWeek: schedule.daysOfWeek,
       observation: schedule.observation || '',
-      daysConfig: schedule.daysConfig || {}
+      daysConfig: schedule.daysConfig || {},
+      dateOverrides: schedule.dateOverrides || {}
     });
     setEditingId(schedule.id);
     setShowAddModal(true);
@@ -83,7 +86,8 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
       active: true,
       daysOfWeek: [1, 2, 3, 4, 5],
       observation: '',
-      daysConfig: {}
+      daysConfig: {},
+      dateOverrides: {}
     });
   };
 
@@ -121,7 +125,8 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
       active: newSchedule.active !== undefined ? newSchedule.active : true,
       daysOfWeek: newSchedule.daysOfWeek || [1, 2, 3, 4, 5],
       observation: newSchedule.observation || '',
-      daysConfig: newSchedule.daysConfig || {}
+      daysConfig: newSchedule.daysConfig || {},
+      dateOverrides: newSchedule.dateOverrides || {}
     };
 
     console.log('UI: Attempting to save schedule:', scheduleData);
@@ -337,6 +342,108 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
                       </div>
                     );
                   })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-3">Exceções por Data (Feriados / Horários Especiais)</label>
+                <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 space-y-4">
+                  <div className="grid grid-cols-1 gap-3">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase">Data da Exceção</label>
+                      <input
+                        type="date"
+                        value={newOverride.date}
+                        onChange={e => setNewOverride({ ...newOverride, date: e.target.value })}
+                        className="w-full rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-sm"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-4 py-1">
+                      <label className="text-sm font-medium text-slate-600 dark:text-slate-400">Terá horários nesta data?</label>
+                      <input
+                        type="checkbox"
+                        checked={newOverride.active}
+                        onChange={e => setNewOverride({ ...newOverride, active: e.target.checked })}
+                        className="rounded text-primary focus:ring-primary"
+                      />
+                    </div>
+
+                    {newOverride.active && (
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                          <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Início</label>
+                          <input
+                            type="time"
+                            value={newOverride.startTime}
+                            onChange={e => setNewOverride({ ...newOverride, startTime: e.target.value })}
+                            className="w-full px-3 py-2 text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                          />
+                        </div>
+                        <span className="text-slate-400 pt-4">-</span>
+                        <div className="flex-1">
+                          <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Fim</label>
+                          <input
+                            type="time"
+                            value={newOverride.endTime}
+                            onChange={e => setNewOverride({ ...newOverride, endTime: e.target.value })}
+                            className="w-full px-3 py-2 text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!newOverride.date) {
+                          alert('Selecione uma data para a exceção.');
+                          return;
+                        }
+                        const overrides = { ...(newSchedule.dateOverrides || {}) };
+                        overrides[newOverride.date] = {
+                          startTime: newOverride.startTime,
+                          endTime: newOverride.endTime,
+                          active: newOverride.active
+                        };
+                        setNewSchedule({ ...newSchedule, dateOverrides: overrides });
+                        setNewOverride({ date: '', startTime: '08:00', endTime: '18:00', active: true });
+                      }}
+                      className="w-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl hover:bg-slate-300 transition-all text-sm"
+                    >
+                      Adicionar Exceção
+                    </button>
+                  </div>
+
+                  {/* List of Overrides */}
+                  {newSchedule.dateOverrides && Object.keys(newSchedule.dateOverrides).length > 0 && (
+                    <div className="mt-4 space-y-2 border-t border-slate-200 dark:border-slate-700 pt-4">
+                      {Object.entries(newSchedule.dateOverrides).sort().map(([date, config]) => {
+                        const override = config as { startTime: string; endTime: string; active: boolean };
+                        return (
+                          <div key={date} className="flex items-center justify-between bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div>
+                              <p className="font-bold text-sm">{new Date(date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', weekday: 'short' })}</p>
+                              <p className="text-xs text-slate-500">
+                                {override.active ? `${override.startTime} às ${override.endTime}` : 'Fechado (Sem horários)'}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const overrides = { ...(newSchedule.dateOverrides || {}) };
+                                delete overrides[date];
+                                setNewSchedule({ ...newSchedule, dateOverrides: overrides });
+                              }}
+                              className="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
+                            >
+                              <span className="material-icons-round text-lg">delete</span>
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
 

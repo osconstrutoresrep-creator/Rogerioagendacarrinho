@@ -35,6 +35,13 @@ export interface Schedule {
       endTime: string;
     };
   };
+  dateOverrides?: {
+    [date: string]: { // YYYY-MM-DD
+      startTime: string;
+      endTime: string;
+      active: boolean;
+    };
+  };
 }
 
 export interface Appointment {

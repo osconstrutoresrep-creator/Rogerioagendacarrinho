@@ -74,19 +74,23 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
     const dateObj = new Date(selectedDate + 'T12:00:00');
     const dayOfWeek = dateObj.getDay(); // 0-6
 
+    // Check for date override first
+    const dateOverride = schedule.dateOverrides?.[selectedDate];
+
     // Check for specific daily config or fall back to global
     const dayConfig = schedule.daysConfig?.[dayOfWeek];
-    const startTimeResult = dayConfig?.startTime || schedule.startTime;
-    const endTimeResult = dayConfig?.endTime || schedule.endTime;
+
+    if (dateOverride && !dateOverride.active) return [];
+
+    const startTimeResult = dateOverride?.startTime || dayConfig?.startTime || schedule.startTime;
+    const endTimeResult = dateOverride?.endTime || dayConfig?.endTime || schedule.endTime;
 
     let current = new Date(`2023-01-01T${startTimeResult}`);
     const end = new Date(`2023-01-01T${endTimeResult}`);
 
     // If start time is after end time (e.g. crossing midnight or invalid), don't generate slots
-    // Also if the day is not in daysOfWeek (though UI shouldn't allow selecting it, good to be safe)
-    // If start time is after end time (e.g. crossing midnight or invalid), don't generate slots
-    // Also if the day is not in daysOfWeek (though UI shouldn't allow selecting it, good to be safe)
-    if (!schedule.daysOfWeek.includes(dayOfWeek)) return [];
+    // Also if the day is not in daysOfWeek (and there is no date override enabling it)
+    if (!dateOverride && !schedule.daysOfWeek.includes(dayOfWeek)) return [];
 
     const now = new Date();
 
@@ -266,7 +270,11 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                   const isToday = dayDate.getTime() === today.getTime();
                   const isPast = dayDate.getTime() < today.getTime();
                   const isSelected = selectedDate === dateStr;
-                  const isAvailable = schedule.daysOfWeek.includes(dayDate.getDay());
+                  const override = schedule.dateOverrides?.[dateStr];
+                  let isAvailable = schedule.daysOfWeek.includes(dayDate.getDay());
+                  if (override) {
+                    isAvailable = override.active;
+                  }
 
                   calendarDays.push(
                     <button
