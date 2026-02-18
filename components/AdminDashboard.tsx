@@ -124,7 +124,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
       <header className="px-6 pt-12 pb-6 bg-white dark:bg-background-dark sticky top-0 z-10">
         <div className="flex justify-between items-center mb-6">
           <div id="admin-dashboard-title">
-            <p className="text-sm text-slate-500 font-medium">Bom dia, {user.name.split(' ')[0]}</p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="material-icons-round text-primary text-sm">calendar_today</span>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' })}
+              </p>
+            </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Painel de Gestão</h1>
           </div>
           <button onClick={() => onNavigate('PROFILE')} className="relative">
@@ -137,21 +142,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
       </header>
 
       <main className="flex-1 overflow-y-auto px-6 pb-24 space-y-8">
-        <section id="admin-summary">
-          <div className="flex justify-between items-end mb-4">
-            <h2 className="text-lg font-bold">Resumo do Dia</h2>
-            <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-full">Hoje, {today}</span>
-          </div>
-          <div className="grid grid-cols-1 gap-3">
-            <div className="bg-primary p-4 rounded-xl shadow-lg shadow-primary/20 text-white flex items-center justify-between">
-              <div>
-                <span className="material-icons-round mb-2 block">event_available</span>
-                <div className="text-[10px] font-medium opacity-80 uppercase tracking-wide">Agendamentos Totais</div>
-              </div>
-              <div className="text-4xl font-bold">{db.appointments.length}</div>
-            </div>
-          </div>
-        </section>
 
         <section id="my-admin-appointments">
           <div className="flex justify-between items-center mb-4">
@@ -182,7 +172,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
                         <p className="text-lg font-bold">{new Date(app.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' })}</p>
                         <p className="text-slate-700 dark:text-slate-300 font-bold">{app.time}</p>
                       </div>
-                      <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                         <span className="material-icons-round text-xl">touch_app</span>
                       </div>
                     </div>

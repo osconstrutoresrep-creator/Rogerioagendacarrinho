@@ -75,8 +75,13 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
       <header className="px-6 pt-12 pb-6 bg-white dark:bg-background-dark sticky top-0 z-10">
         <div className="flex justify-between items-center mb-6">
           <div id="user-dashboard-title">
-            <p className="text-sm text-slate-500 font-medium">Bem-vindo,</p>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{user.name.split(' ')[0]}</h1>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="material-icons-round text-primary text-sm">calendar_today</span>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' })}
+              </p>
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Olá, {user.name.split(' ')[0]}</h1>
           </div>
           <button onClick={() => onNavigate('PROFILE')} className="relative">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg border-2 border-primary">
@@ -139,7 +144,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                         <p className="text-lg font-bold">{new Date(app.date + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' })}</p>
                         <p className="text-slate-700 dark:text-slate-300 font-bold">{app.time}</p>
                       </div>
-                      <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-400">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                         <span className="material-icons-round text-xl">touch_app</span>
                       </div>
                     </div>
@@ -172,7 +177,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                     </p>
                   )}
                 </div>
-                <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-slate-700 flex items-center justify-center text-slate-300 group-hover:text-primary transition-colors">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
                   <span className="material-icons-round">touch_app</span>
                 </div>
                 <span className="material-icons-round text-slate-300">chevron_right</span>
