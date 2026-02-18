@@ -180,7 +180,6 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
                   <span className="material-icons-round">touch_app</span>
                 </div>
-                <span className="material-icons-round text-slate-300">chevron_right</span>
               </div>
             ))}
           </div>
