@@ -310,13 +310,13 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                 className={`p-3 rounded-xl border flex flex-col items-center transition-all ${selectedTime === slot.time
                   ? 'bg-primary border-primary text-white ring-2 ring-primary ring-offset-2 dark:ring-offset-background-dark'
                   : slot.availableSlots <= 0
-                    ? 'bg-slate-100 dark:bg-slate-800/50 border-transparent text-slate-300 cursor-not-allowed opacity-50'
+                    ? 'bg-slate-200 dark:bg-slate-800 border-transparent text-slate-600 dark:text-slate-400 cursor-not-allowed'
                     : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-primary'
                   }`}
               >
                 <span className="text-lg font-bold">{slot.time}</span>
                 {slot.availableSlots <= 0 && (
-                  <span className="text-[8px] font-bold uppercase tracking-tighter opacity-70 mt-1 leading-tight text-center">
+                  <span className="text-[8px] font-bold uppercase tracking-tighter text-slate-500 dark:text-slate-500 mt-1 leading-tight text-center">
                     Agendado por outro publicador
                   </span>
                 )}
