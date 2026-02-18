@@ -4,8 +4,8 @@ import { User, Schedule, Appointment, Announcement } from './types';
 
 export const api = {
     // Auth
-    signIn: async (email: string, password: string): Promise<{ user: User | null, error: any }> => {
-        const { data, error } = await supabase.from('profiles').select('*').eq('email', email).eq('password', password).single();
+    signIn: async (username: string, password: string): Promise<{ user: User | null, error: any }> => {
+        const { data, error } = await supabase.from('profiles').select('*').eq('username', username).eq('password', password).single();
         if (error) {
             console.error('Sign In Error:', error);
             return { user: null, error };
@@ -14,9 +14,9 @@ export const api = {
         return { user: data as User, error: null };
     },
 
-    signUp: async (email: string, password: string, name: string): Promise<{ user: User | null, error: any }> => {
+    signUp: async (username: string, password: string, name: string): Promise<{ user: User | null, error: any }> => {
         const { data, error } = await supabase.auth.signUp({
-            email,
+            email: `${username}@placeholder.com`, // Auth still needs an email format usually, but we are using profiles table for logic
             password,
             options: {
                 data: { name, role: 'USER' }
@@ -68,7 +68,7 @@ export const api = {
 
         const { data, error } = await supabase.from('profiles').insert([{
             name: user.name,
-            email: user.email,
+            username: user.username,
             password: user.password,
             role: user.role,
             id: generateUUID()
@@ -86,7 +86,7 @@ export const api = {
     updateUser: async (user: User): Promise<void> => {
         const { error } = await supabase.from('profiles').update({
             name: user.name,
-            email: user.email,
+            username: user.username,
             password: user.password,
             role: user.role
         }).eq('id', user.id);

@@ -14,10 +14,10 @@ interface UserManagementProps {
 const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack }) => {
   const [showModal, setShowModal] = useState<'ADD' | 'EDIT' | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [formState, setFormState] = useState({ name: '', email: '', password: '', role: 'USER' as Role });
+  const [formState, setFormState] = useState({ name: '', username: '', password: '', role: 'USER' as Role });
 
   const resetForm = () => {
-    setFormState({ name: '', email: '', password: '', role: 'USER' });
+    setFormState({ name: '', username: '', password: '', role: 'USER' });
     setEditingUser(null);
     setShowModal(null);
   };
@@ -33,7 +33,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
 
     const newUser = {
       name: formState.name,
-      email: formState.email,
+      username: formState.username,
       password: formState.password,
       role: formState.role
     };
@@ -54,7 +54,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
     const updatedUser: User = {
       ...editingUser,
       name: formState.name,
-      email: formState.email,
+      username: formState.username,
       password: formState.password,
       role: formState.role
     };
@@ -76,7 +76,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
     setEditingUser(user);
     setFormState({
       name: user.name,
-      email: user.email,
+      username: user.username,
       password: user.password || '',
       role: user.role
     });
@@ -98,7 +98,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
           <span className="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
           <input
             type="text"
-            placeholder="Buscar por nome ou e-mail..."
+            placeholder="Buscar por nome ou usuário..."
             className="w-full pl-10 pr-4 py-3 rounded-xl border-none bg-white dark:bg-slate-800 shadow-sm focus:ring-2 focus:ring-primary text-sm"
           />
         </div>
@@ -150,8 +150,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
                 <input required type="text" value={formState.name} onChange={e => setFormState({ ...formState, name: e.target.value })} className="w-full rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">E-mail</label>
-                <input required type="email" value={formState.email} onChange={e => setFormState({ ...formState, email: e.target.value })} className="w-full rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-800" />
+                <label className="block text-sm font-medium mb-1">Usuário</label>
+                <input required type="text" value={formState.username} onChange={e => setFormState({ ...formState, username: e.target.value })} className="w-full rounded-xl border-slate-200 dark:border-slate-700 dark:bg-slate-800" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Senha {showModal === 'ADD' ? 'Provisória' : '(Deixe em branco para manter)'}</label>

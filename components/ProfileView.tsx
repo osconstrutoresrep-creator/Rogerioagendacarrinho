@@ -55,10 +55,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({ user, updateDB, onBack, onLog
               />
             </div>
             <div className="opacity-60">
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-1">E-mail (Inalterável)</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-1">Usuário (Inalterável)</label>
               <input
-                type="email"
-                value={user.email}
+                type="text"
+                value={user.username}
                 disabled
                 className="w-full rounded-xl border-slate-200 bg-slate-50 dark:bg-slate-900/50"
               />

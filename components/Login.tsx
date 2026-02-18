@@ -9,7 +9,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -17,10 +17,10 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     e.preventDefault();
     setError('');
 
-    const { user, error } = await api.signIn(email, password);
+    const { user, error } = await api.signIn(username, password);
 
     if (error) {
-      setError('E-mail ou senha incorretos.');
+      setError('Usuário ou senha incorretos.');
       return;
     }
 
@@ -40,13 +40,13 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
       <form onSubmit={handleLoginSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">E-mail</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Usuário</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-3 rounded-xl border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-            placeholder="nome@empresa.com"
+            placeholder="Seu usuário"
             required
           />
         </div>

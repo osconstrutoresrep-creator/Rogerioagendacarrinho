@@ -135,6 +135,36 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
           </div>
         </section>
 
+        <section id="my-admin-appointments">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold">Agendamentos de {user.name.split(' ')[0]}</h2>
+          </div>
+          <div className="space-y-3">
+            {db.appointments.filter(a => a.createdBy === user.id).length === 0 ? (
+              <div className="text-center py-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                <p className="text-slate-400 text-sm">Você ainda não possui agendamentos.</p>
+              </div>
+            ) : (
+              db.appointments.filter(a => a.createdBy === user.id).map(app => {
+                const schedule = db.schedules.find(s => s.id === app.scheduleId);
+                return (
+                  <div key={app.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-bold text-slate-900 dark:text-white">{schedule?.name || 'Agenda Excluída'}</h3>
+                        <p className="text-sm text-slate-500">{new Date(app.date).toLocaleDateString('pt-BR')} às {app.time}</p>
+                      </div>
+                      <div className="text-primary">
+                        <span className="material-icons-round">check_circle</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </section>
+
         <section id="admin-announcements">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Mural de Avisos</h2>
