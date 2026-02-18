@@ -108,7 +108,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
         </div>
 
         <div className="space-y-3">
-          {db.users.map(u => (
+          {[...db.users].sort((a, b) => a.name.localeCompare(b.name)).map(u => (
             <div key={u.id} className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div>
@@ -161,9 +161,14 @@ const UserManagement: React.FC<UserManagementProps> = ({ db, refreshData, onBack
                 <label className="text-sm font-medium">Permissão Administrativa?</label>
                 <input type="checkbox" checked={formState.role === 'ADMIN'} onChange={e => setFormState({ ...formState, role: e.target.checked ? 'ADMIN' : 'USER' })} className="rounded text-primary focus:ring-primary" />
               </div>
-              <button type="submit" className="w-full bg-primary text-white font-bold py-4 rounded-xl mt-4 transition-all active:scale-[0.98]">
-                {showModal === 'ADD' ? 'Criar Usuário' : 'Salvar Alterações'}
-              </button>
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                <button type="button" onClick={resetForm} className="bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold py-4 rounded-xl hover:bg-slate-200 transition-all active:scale-[0.98]">
+                  Voltar
+                </button>
+                <button type="submit" className="bg-primary text-white font-bold py-4 rounded-xl transition-all active:scale-[0.98]">
+                  {showModal === 'ADD' ? 'Criar Usuário' : 'Salvar'}
+                </button>
+              </div>
             </form>
           </div>
         </div>
