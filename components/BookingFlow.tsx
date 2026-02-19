@@ -84,6 +84,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
 
     const startTimeResult = dateOverride?.startTime || dayConfig?.startTime || schedule.startTime;
     const endTimeResult = dateOverride?.endTime || dayConfig?.endTime || schedule.endTime;
+    const slotDurationResult = dateOverride?.slotDuration || schedule.slotDuration;
 
     let current = new Date(`2023-01-01T${startTimeResult}`);
     const end = new Date(`2023-01-01T${endTimeResult}`);
@@ -120,7 +121,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
           availableSlots: Math.max(0, schedule.maxParticipantsPerSlot - totalParticipants)
         });
       }
-      current.setMinutes(current.getMinutes() + schedule.slotDuration);
+      current.setMinutes(current.getMinutes() + slotDurationResult);
     }
 
 

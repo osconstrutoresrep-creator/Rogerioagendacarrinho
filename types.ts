@@ -40,6 +40,7 @@ export interface Schedule {
       startTime: string;
       endTime: string;
       active: boolean;
+      slotDuration?: number;
     };
   };
 }
