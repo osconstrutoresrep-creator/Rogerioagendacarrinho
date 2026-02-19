@@ -5,6 +5,7 @@ import TutorialOverlay, { TutorialStep } from './TutorialOverlay';
 
 import { api } from '../api';
 import { getScheduleTimeRange } from '../lib/utils';
+import NotificationBell from './NotificationBell';
 
 interface UserDashboardProps {
   user: User;
@@ -43,12 +44,13 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
   const now = new Date();
   const myAppointments = db.appointments
     .filter(app => {
-      if (!app.participants.includes(user.id)) return false;
+      // Must be a participant
+      const isParticipant = app.participants.some(p => typeof p === 'string' ? p === user.id : false);
+      if (!isParticipant) return false;
 
-      // Create Date object for appointment (assuming local time)
-      // Using T12:00:00 logic if time is missing, but here we have app.time
-      const appDate = new Date(`${app.date}T${app.time}`);
-      return appDate > now;
+      // Hide if in the past
+      const appDateTime = new Date(`${app.date}T${app.time}`);
+      return appDateTime >= now;
     })
     .sort((a, b) => new Date(`${a.date}T${a.time}`).getTime() - new Date(`${b.date}T${b.time}`).getTime());
 
@@ -83,11 +85,19 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
             </div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Olá, {user.name.split(' ')[0]}</h1>
           </div>
-          <button onClick={() => onNavigate('PROFILE')} className="relative">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg border-2 border-primary">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => onNavigate('PROFILE')} className="relative">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg border-2 border-primary">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+            </button>
+            <NotificationBell
+              user={user}
+              appointments={db.appointments}
+              schedules={db.schedules}
+              onSelectAppointment={setSelectedAppointment}
+            />
+          </div>
         </div>
       </header>
 
@@ -198,106 +208,108 @@ const UserDashboard: React.FC<UserDashboardProps> = ({ user, db, refreshData, on
       </nav>
 
       {/* Appointment Details Modal */}
-      {selectedAppointment && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedAppointment(null)}></div>
-          <div className="relative bg-white dark:bg-slate-900 w-full rounded-t-3xl p-6 shadow-2xl animate-fade-in-up">
-            <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-6"></div>
+      {
+        selectedAppointment && (
+          <div className="fixed inset-0 z-50 flex flex-col justify-end">
+            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedAppointment(null)}></div>
+            <div className="relative bg-white dark:bg-slate-900 w-full rounded-t-3xl p-6 shadow-2xl animate-fade-in-up">
+              <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mb-6"></div>
 
-            <div className="flex justify-between items-start mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">Detalhes do Agendamento</h2>
-                <p className="text-sm text-slate-500">
-                  {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.name}
-                </p>
-              </div>
-              <span className="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-bold uppercase">Confirmado</span>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <div className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Data</p>
-                  <p className="font-bold">{new Date(selectedAppointment.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</p>
-                </div>
-                <div className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Horário</p>
-                  <p className="font-bold">{selectedAppointment.time}</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                  <span className="material-icons-round text-primary">people</span>
-                  Participantes
-                </h3>
-                <div className="space-y-2">
-                  {selectedAppointment.participants.map((p, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                        {getParticipantName(p).charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <p className="text-xs font-bold text-slate-400 uppercase">Publicador {index + 1}</p>
-                        <p className="font-medium">{getParticipantName(p)}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Daily scale note */}
-              <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/20">
-                <h3 className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
-                  <span className="material-icons-round text-sm">event_note</span>
-                  Escala do Dia
-                </h3>
-                <div className="space-y-2">
-                  {db.appointments
-                    .filter(app => app.date === selectedAppointment.date && app.scheduleId === selectedAppointment.scheduleId)
-                    .sort((a, b) => a.time.localeCompare(b.time))
-                    .map(app => (
-                      <div key={app.id} className="text-xs flex gap-2">
-                        <span className="font-bold text-blue-700 dark:text-blue-300 min-w-[45px]">{app.time}:</span>
-                        <span className="text-blue-600 dark:text-blue-400">
-                          {app.participants.map(p => getParticipantName(p)).join(', ')}
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.observation && (
-                <div className="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-900/20">
-                  <h3 className="text-sm font-bold text-amber-900 dark:text-amber-100 mb-1 flex items-center gap-2">
-                    <span className="material-icons-round text-sm">info</span>
-                    Observações da Agenda
-                  </h3>
-                  <p className="text-sm text-amber-800 dark:text-amber-200/80">
-                    {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.observation}
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white">Detalhes do Agendamento</h2>
+                  <p className="text-sm text-slate-500">
+                    {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.name}
                   </p>
                 </div>
-              )}
+                <span className="px-3 py-1 bg-green-50 text-green-600 rounded-full text-xs font-bold uppercase">Confirmado</span>
+              </div>
 
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={() => handleCancel(selectedAppointment.id)}
-                  className="w-full py-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold transition-colors flex items-center justify-center gap-2"
-                >
-                  <span className="material-icons-round">cancel</span>
-                  Cancelar Agendamento
-                </button>
-                <button
-                  onClick={() => setSelectedAppointment(null)}
-                  className="w-full py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold transition-colors flex items-center justify-center gap-2 hover:bg-slate-200"
-                >
-                  Voltar
-                </button>
+              <div className="space-y-6">
+                <div className="flex gap-4">
+                  <div className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Data</p>
+                    <p className="font-bold">{new Date(selectedAppointment.date + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long' })}</p>
+                  </div>
+                  <div className="flex-1 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Horário</p>
+                    <p className="font-bold">{selectedAppointment.time}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
+                    <span className="material-icons-round text-primary">people</span>
+                    Participantes
+                  </h3>
+                  <div className="space-y-2">
+                    {selectedAppointment.participants.map((p, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+                          {getParticipantName(p).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-slate-400 uppercase">Publicador {index + 1}</p>
+                          <p className="font-medium">{getParticipantName(p)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Daily scale note */}
+                <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/20">
+                  <h3 className="text-sm font-bold text-blue-900 dark:text-blue-100 mb-3 flex items-center gap-2">
+                    <span className="material-icons-round text-sm">event_note</span>
+                    Escala do Dia
+                  </h3>
+                  <div className="space-y-2">
+                    {db.appointments
+                      .filter(app => app.date === selectedAppointment.date && app.scheduleId === selectedAppointment.scheduleId)
+                      .sort((a, b) => a.time.localeCompare(b.time))
+                      .map(app => (
+                        <div key={app.id} className="text-xs flex gap-2">
+                          <span className="font-bold text-blue-700 dark:text-blue-300 min-w-[45px]">{app.time}:</span>
+                          <span className="text-blue-600 dark:text-blue-400">
+                            {app.participants.map(p => getParticipantName(p)).join(', ')}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.observation && (
+                  <div className="bg-amber-50 dark:bg-amber-900/10 p-4 rounded-xl border border-amber-100 dark:border-amber-900/20">
+                    <h3 className="text-sm font-bold text-amber-900 dark:text-amber-100 mb-1 flex items-center gap-2">
+                      <span className="material-icons-round text-sm">info</span>
+                      Observações da Agenda
+                    </h3>
+                    <p className="text-sm text-amber-800 dark:text-amber-200/80">
+                      {db.schedules.find(s => s.id === selectedAppointment.scheduleId)?.observation}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={() => handleCancel(selectedAppointment.id)}
+                    className="w-full py-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 font-bold transition-colors flex items-center justify-center gap-2"
+                  >
+                    <span className="material-icons-round">cancel</span>
+                    Cancelar Agendamento
+                  </button>
+                  <button
+                    onClick={() => setSelectedAppointment(null)}
+                    className="w-full py-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold transition-colors flex items-center justify-center gap-2 hover:bg-slate-200"
+                  >
+                    Voltar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
       <TutorialOverlay pageKey="user_dashboard" steps={tutorialSteps} />
     </div >
   );

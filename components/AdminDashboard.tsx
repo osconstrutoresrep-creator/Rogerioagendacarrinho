@@ -5,6 +5,7 @@ import TutorialOverlay, { TutorialStep } from './TutorialOverlay';
 
 import { api } from '../api';
 import { getScheduleTimeRange } from '../lib/utils';
+import NotificationBell from './NotificationBell';
 
 interface AdminDashboardProps {
   user: User;
@@ -136,8 +137,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg border-2 border-primary">
               {user.name.charAt(0).toUpperCase()}
             </div>
-            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-background-dark"></span>
           </button>
+          <NotificationBell
+            user={user}
+            appointments={db.appointments}
+            schedules={db.schedules}
+            onSelectAppointment={setSelectedAppointment}
+          />
         </div>
       </header>
 
@@ -148,13 +154,28 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
             <h2 className="text-lg font-bold">Agendamentos de {user.name.split(' ')[0]}</h2>
           </div>
           <div className="space-y-3">
-            {db.appointments.filter(a => a.createdBy === user.id).length === 0 ? (
-              <div className="bg-slate-50 dark:bg-slate-800 p-8 rounded-xl text-center border-2 border-dashed border-slate-200 dark:border-slate-700">
-                <span className="material-icons-round text-4xl text-slate-300 mb-2">event_busy</span>
-                <p className="text-slate-400 text-sm">Você ainda não possui agendamentos.</p>
-              </div>
-            ) : (
-              db.appointments.filter(a => a.createdBy === user.id).map(app => {
+            {(() => {
+              const now = new Date();
+              const myApps = db.appointments.filter(a => {
+                // Must be a participant
+                const isParticipant = a.participants.some(p => typeof p === 'string' ? p === user.id : false);
+                if (!isParticipant) return false;
+
+                // Hide if in the past
+                const appDateTime = new Date(`${a.date}T${a.time}`);
+                return appDateTime >= now;
+              });
+
+              if (myApps.length === 0) {
+                return (
+                  <div className="bg-slate-50 dark:bg-slate-800 p-8 rounded-xl text-center border-2 border-dashed border-slate-200 dark:border-slate-700">
+                    <span className="material-icons-round text-4xl text-slate-300 mb-2">event_busy</span>
+                    <p className="text-slate-400 text-sm">Você não possui agendamentos próximos.</p>
+                  </div>
+                );
+              }
+
+              return myApps.map(app => {
                 const schedule = db.schedules.find(s => s.id === app.scheduleId);
                 return (
                   <div
@@ -178,8 +199,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
                     </div>
                   </div>
                 );
-              })
-            )}
+              });
+            })()}
           </div>
         </section>
 
