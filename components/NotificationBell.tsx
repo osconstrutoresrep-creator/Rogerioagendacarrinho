@@ -42,12 +42,12 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ user, appointments,
 
     const activeAppForBell = useMemo(() => {
         const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
         const tomorrow = new Date(now);
         tomorrow.setDate(now.getDate() + 1);
         const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
-        // Find the NEXT appointment for tomorrow specifically to blink
-        // But also need to hide if it passed.
+        // Find the next upcoming appointment for today or tomorrow
         const app = appointments.find(app => {
             const isParticipant = app.participants.some(p =>
                 typeof p === 'string' ? p === user.id : false
@@ -57,7 +57,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ user, appointments,
             const appDateTime = new Date(`${app.date}T${app.time}`);
             if (appDateTime < now) return false; // Already passed
 
-            return app.date === tomorrowStr;
+            return app.date === todayStr || app.date === tomorrowStr;
         });
 
         return app;
@@ -65,7 +65,11 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ user, appointments,
 
     const handleBellClick = () => {
         if (activeAppForBell) {
-            setMessage("Não esqueça do seu agendamento amanhã!");
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const isToday = activeAppForBell.date === todayStr;
+
+            setMessage(isToday ? "Não esqueça seu agendamento hoje!" : "Não esqueça do seu agendamento amanhã!");
             setRelevantApp(activeAppForBell);
             setShowNotification(true);
         }

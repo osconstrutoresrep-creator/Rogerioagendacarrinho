@@ -289,7 +289,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, db, refreshData, 
                       )}
                     </div>
                   </div>
-                  <button className="text-slate-400"><span className="material-icons-round">more_vert</span></button>
+                  <div className="flex flex-col items-end gap-2">
+                    <button className="text-slate-400"><span className="material-icons-round">more_vert</span></button>
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+                      <span className="material-icons-round">touch_app</span>
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-4 flex justify-between items-center">
                   <div className="flex items-center gap-2">
