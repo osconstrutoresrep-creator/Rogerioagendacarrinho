@@ -94,6 +94,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
     if (!dateOverride && !schedule.daysOfWeek.includes(dayOfWeek)) return [];
 
     const now = new Date();
+    const isFixedDay = !dateOverride && dayConfig?.isFixedTime === true;
 
     while (current < end) {
       const timeStr = current.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -118,7 +119,8 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
 
         slots.push({
           time: timeStr,
-          availableSlots: Math.max(0, schedule.maxParticipantsPerSlot - totalParticipants)
+          availableSlots: Math.max(0, schedule.maxParticipantsPerSlot - totalParticipants),
+          isFixed: isFixedDay
         });
       }
       current.setMinutes(current.getMinutes() + slotDurationResult);
@@ -311,26 +313,42 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
             Horários Disponíveis
           </h3>
           <div className="grid grid-cols-3 gap-3">
-            {timeSlots.map(slot => (
-              <button
-                key={slot.time}
-                disabled={slot.availableSlots <= 0}
-                onClick={() => setSelectedTime(slot.time)}
-                className={`p-3 rounded-xl border flex flex-col items-center transition-all ${selectedTime === slot.time
-                  ? 'bg-primary border-primary text-white ring-2 ring-primary ring-offset-2 dark:ring-offset-background-dark'
-                  : slot.availableSlots <= 0
-                    ? 'bg-slate-200 dark:bg-slate-800 border-transparent text-slate-600 dark:text-slate-400 cursor-not-allowed'
-                    : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-primary'
-                  }`}
-              >
-                <span className="text-lg font-bold">{slot.time}</span>
-                {slot.availableSlots <= 0 && (
-                  <span className="text-[8px] font-bold uppercase tracking-tighter text-slate-500 dark:text-slate-500 mt-1 leading-tight text-center">
-                    Agendado por outro publicador
-                  </span>
-                )}
-              </button>
-            ))}
+            {timeSlots.map(slot => {
+              const isBlockedForUser = slot.isFixed && !isAdmin;
+              const isFull = slot.availableSlots <= 0;
+              const isDisabled = isBlockedForUser || isFull;
+
+              return (
+                <button
+                  key={slot.time}
+                  disabled={isDisabled}
+                  onClick={() => setSelectedTime(slot.time)}
+                  className={`p-3 rounded-xl border flex flex-col items-center transition-all ${selectedTime === slot.time
+                    ? 'bg-primary border-primary text-white ring-2 ring-primary ring-offset-2 dark:ring-offset-background-dark'
+                    : isDisabled
+                      ? 'bg-slate-200 dark:bg-slate-800 border-transparent text-slate-600 dark:text-slate-400 cursor-not-allowed'
+                      : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:border-primary'
+                    }`}
+                >
+                  <span className="text-lg font-bold">{slot.time}</span>
+                  {(slot.isFixed && isAdmin && !isFull) && (
+                    <span className="text-[8px] font-bold uppercase tracking-tighter text-amber-600 dark:text-amber-500 mt-1 leading-tight text-center">
+                      Horário Fixo
+                    </span>
+                  )}
+                  {isBlockedForUser && !isFull && (
+                    <span className="text-[8px] font-bold uppercase tracking-tighter text-slate-500 dark:text-slate-500 mt-1 leading-tight text-center">
+                      Já marcado
+                    </span>
+                  )}
+                  {isFull && (
+                    <span className="text-[8px] font-bold uppercase tracking-tighter text-slate-500 dark:text-slate-500 mt-1 leading-tight text-center">
+                      Agendado por outro publicador
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </section>
       </main>

@@ -311,31 +311,48 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
                         </div>
 
                         {isSelected && (
-                          <div className="flex items-center gap-2 pl-6">
-                            <div className="flex-1">
-                              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Início</label>
-                              <input
-                                type="time"
-                                value={dayConfig.startTime}
-                                onChange={(e) => {
-                                  const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, startTime: e.target.value } };
-                                  setNewSchedule({ ...newSchedule, daysConfig: newConfig });
-                                }}
-                                className="w-full px-2 py-1 text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
-                              />
+                          <div className="flex flex-col gap-3 pl-6 mt-2">
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1">
+                                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Início</label>
+                                <input
+                                  type="time"
+                                  value={dayConfig.startTime}
+                                  onChange={(e) => {
+                                    const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, startTime: e.target.value } };
+                                    setNewSchedule({ ...newSchedule, daysConfig: newConfig });
+                                  }}
+                                  className="w-full px-2 py-1 text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                                />
+                              </div>
+                              <span className="text-slate-400 pt-4">-</span>
+                              <div className="flex-1">
+                                <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Fim</label>
+                                <input
+                                  type="time"
+                                  value={dayConfig.endTime}
+                                  onChange={(e) => {
+                                    const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, endTime: e.target.value } };
+                                    setNewSchedule({ ...newSchedule, daysConfig: newConfig });
+                                  }}
+                                  className="w-full px-2 py-1 text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                                />
+                              </div>
                             </div>
-                            <span className="text-slate-400 pt-4">-</span>
-                            <div className="flex-1">
-                              <label className="text-[10px] text-slate-400 uppercase font-bold block mb-1">Fim</label>
+                            <div className="flex items-center gap-2">
                               <input
-                                type="time"
-                                value={dayConfig.endTime}
+                                type="checkbox"
+                                id={`fixed-${day.id}`}
+                                checked={!!dayConfig.isFixedTime}
                                 onChange={(e) => {
-                                  const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, endTime: e.target.value } };
+                                  const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, isFixedTime: e.target.checked } };
                                   setNewSchedule({ ...newSchedule, daysConfig: newConfig });
                                 }}
-                                className="w-full px-2 py-1 text-sm rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"
+                                className="w-4 h-4 text-primary rounded border-slate-300 focus:ring-primary"
                               />
+                              <label htmlFor={`fixed-${day.id}`} className="text-[11px] font-bold uppercase text-slate-500 cursor-pointer">
+                                Horário Fixo (Restrito para Admins)
+                              </label>
                             </div>
                           </div>
                         )}
