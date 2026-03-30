@@ -353,7 +353,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
                   )}
                   {isBlockedForUser && !isFull && (
                     <span className="text-[8px] font-bold uppercase tracking-tighter text-slate-500 dark:text-slate-500 mt-1 leading-tight text-center">
-                      Já marcado
+                      Horário Fixo<br />(Já marcado)
                     </span>
                   )}
                   {isFull && (
