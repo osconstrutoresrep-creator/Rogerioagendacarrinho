@@ -94,7 +94,6 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
     if (!dateOverride && !schedule.daysOfWeek.includes(dayOfWeek)) return [];
 
     const now = new Date();
-    const isFixedDay = !dateOverride && dayConfig?.isFixedTime === true;
 
     while (current < end) {
       const timeStr = current.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -109,6 +108,22 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
         }
       }
 
+      let isFixedSlot = false;
+      if (!dateOverride && dayConfig?.isFixedTime) {
+        const fixedStart = dayConfig.fixedTimeStart || dayConfig.startTime;
+        const fixedEnd = dayConfig.fixedTimeEnd || dayConfig.endTime;
+
+        const slotMins = current.getHours() * 60 + current.getMinutes();
+        const startSplit = fixedStart.split(':');
+        const fStartMins = parseInt(startSplit[0]) * 60 + parseInt(startSplit[1]);
+        const endSplit = fixedEnd.split(':');
+        const fEndMins = parseInt(endSplit[0]) * 60 + parseInt(endSplit[1]);
+
+        if (slotMins >= fStartMins && slotMins < fEndMins) {
+          isFixedSlot = true;
+        }
+      }
+
       if (!isSlotPast) {
         const apps = db.appointments.filter(a => a.scheduleId === schedule.id && a.date === selectedDate && a.time === timeStr);
 
@@ -120,7 +135,7 @@ const BookingFlow: React.FC<BookingFlowProps> = ({ user, schedule, db, refreshDa
         slots.push({
           time: timeStr,
           availableSlots: Math.max(0, schedule.maxParticipantsPerSlot - totalParticipants),
-          isFixed: isFixedDay
+          isFixed: isFixedSlot
         });
       }
       current.setMinutes(current.getMinutes() + slotDurationResult);

@@ -339,20 +339,60 @@ const ScheduleConfig: React.FC<ScheduleConfigProps> = ({ db, refreshData, onBack
                                 />
                               </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                id={`fixed-${day.id}`}
-                                checked={!!dayConfig.isFixedTime}
-                                onChange={(e) => {
-                                  const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, isFixedTime: e.target.checked } };
-                                  setNewSchedule({ ...newSchedule, daysConfig: newConfig });
-                                }}
-                                className="w-4 h-4 text-primary rounded border-slate-300 focus:ring-primary"
-                              />
-                              <label htmlFor={`fixed-${day.id}`} className="text-[11px] font-bold uppercase text-slate-500 cursor-pointer">
-                                Horário Fixo (Restrito para Admins)
-                              </label>
+                            <div className="flex flex-col gap-2">
+                              <div className="flex items-center gap-2">
+                                <input
+                                  type="checkbox"
+                                  id={`fixed-${day.id}`}
+                                  checked={!!dayConfig.isFixedTime}
+                                  onChange={(e) => {
+                                    const isFixed = e.target.checked;
+                                    const newConfig = {
+                                      ...newSchedule.daysConfig,
+                                      [day.id]: {
+                                        ...dayConfig,
+                                        isFixedTime: isFixed,
+                                        fixedTimeStart: isFixed ? (dayConfig.fixedTimeStart || dayConfig.startTime) : undefined,
+                                        fixedTimeEnd: isFixed ? (dayConfig.fixedTimeEnd || dayConfig.endTime) : undefined
+                                      }
+                                    };
+                                    setNewSchedule({ ...newSchedule, daysConfig: newConfig });
+                                  }}
+                                  className="w-4 h-4 text-primary rounded border-slate-300 focus:ring-primary"
+                                />
+                                <label htmlFor={`fixed-${day.id}`} className="text-[11px] font-bold uppercase text-slate-500 cursor-pointer">
+                                  Horário Fixo (Restrito para Admins)
+                                </label>
+                              </div>
+                              {dayConfig.isFixedTime && (
+                                <div className="flex items-center gap-2 pl-6 mt-1 bg-amber-50/50 dark:bg-amber-900/10 p-2 rounded-lg border border-amber-100 dark:border-amber-900/30">
+                                  <div className="flex-1">
+                                    <label className="text-[9px] text-amber-600 dark:text-amber-500 uppercase font-bold block mb-1">Início Fixo</label>
+                                    <input
+                                      type="time"
+                                      value={dayConfig.fixedTimeStart || ''}
+                                      onChange={(e) => {
+                                        const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, fixedTimeStart: e.target.value } };
+                                        setNewSchedule({ ...newSchedule, daysConfig: newConfig });
+                                      }}
+                                      className="w-full px-2 py-1 text-xs rounded-lg bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400"
+                                    />
+                                  </div>
+                                  <span className="text-amber-300 pt-3">-</span>
+                                  <div className="flex-1">
+                                    <label className="text-[9px] text-amber-600 dark:text-amber-500 uppercase font-bold block mb-1">Fim Fixo</label>
+                                    <input
+                                      type="time"
+                                      value={dayConfig.fixedTimeEnd || ''}
+                                      onChange={(e) => {
+                                        const newConfig = { ...newSchedule.daysConfig, [day.id]: { ...dayConfig, fixedTimeEnd: e.target.value } };
+                                        setNewSchedule({ ...newSchedule, daysConfig: newConfig });
+                                      }}
+                                      className="w-full px-2 py-1 text-xs rounded-lg bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400"
+                                    />
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         )}

@@ -34,6 +34,8 @@ export interface Schedule {
       startTime: string;
       endTime: string;
       isFixedTime?: boolean;
+      fixedTimeStart?: string;
+      fixedTimeEnd?: string;
     };
   };
   dateOverrides?: {
