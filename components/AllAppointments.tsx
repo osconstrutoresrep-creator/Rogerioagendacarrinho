@@ -221,6 +221,37 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, refresh
     );
   };
 
+  const handleDownloadBackup = () => {
+    let content = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head><meta charset='utf-8'><title>Backup Agendamentos</title></head>
+      <body>
+          <h2>Próximos Agendamentos</h2>
+          <ul>
+    `;
+
+    upcoming.forEach(app => {
+      const sch = db.schedules.find(s => s.id === app.scheduleId);
+      const schName = sch?.name || 'Agenda Removida';
+      const participants = app.participants.map(p => getUserName(p)).join(', ');
+      content += `<li>${schName}, ${formatDateBR(app.date)}, ${app.time}, ${participants}</li>`;
+    });
+
+    content += `
+          </ul>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `backup_agendamentos_${new Date().toISOString().split('T')[0]}.doc`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex flex-col h-full bg-background-light dark:bg-background-dark">
       <header className="px-4 pt-12 pb-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-10 flex flex-col gap-4">
@@ -250,6 +281,14 @@ const AllAppointments: React.FC<AllAppointmentsProps> = ({ db, updateDB, refresh
             className="w-40 px-3 py-3 rounded-xl border-none bg-slate-100 dark:bg-slate-800 focus:ring-2 focus:ring-primary text-sm"
           />
         </div>
+
+        <button 
+          onClick={handleDownloadBackup}
+          className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors text-sm shadow-sm"
+        >
+          <span className="material-icons-round">description</span>
+          Baixar Backup Word
+        </button>
       </header>
 
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
